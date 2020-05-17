@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>VueJS</title>
+    <style>
+      .demo {
+        width: 100px;
+        height: 100px;
+        background-color: gray;
+        display: inline-block;
+        margin: 10px;
+      }
+
+      .red {
+        background-color: red;
+      }
+
+      .green {
+        background-color: green;
+      }
+
+      .blue {
+        background-color: blue;
+      }
+
+      .highlight {
+        background-color: red;
+        width: 200px;
+      }
+
+      .shrink {
+        background-color: gray;
+        width: 50px !important;
+      }
+
+      .float {
+        float: right;
+      }
+      .text-color {
+        color: yellow;
+      }
+      .visible {
+        width: 100px;
+        height: 50px;
+      }
+      .progress-bar {
+        width: 200px;
+        height: 20px;
+        border: 1px solid black;
+      }
+
+      #effect {
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+      }
+    </style>
+    <link rel="stylesheet" href="" />
+    <script src="vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1 v-once>{{ title }}</h1>
+      <p>{{ sayHello() }}</p>
+      <input type="text" v-on:input="changeTitle" />
+      <p>{{ title }}</p>
+      - <a :href="link">link</a>
+      <hr />
+      <p v-html="finishedLink"></p>
+
+      <button @click="increase(2)">Click me</button>
+      <p>{{counter}}</p>
+
+      <button @click="counter++">Increase</button>
+      <button @click="counter--">Decrease</button>
+      <p>Counter: {{counter}}</p>
+      <p>Result: {{result}}</p>
+
+      <p @mousemove="updateCoordinates">
+        Coordinates: {{x}} / {{y}}
+        <!-- 	-<span @mousemove="dummy">Dead Spot</span> -->
+        -<span @mousemove.stop>Dead Spot</span>
+      </p>
+
+      <input type="text" @keyup.enter.space="alertMe" />
+
+      <input type="text" v-model="name" />
+      <p>{{name}}</p>
+
+      <div
+        class="demo"
+        :class="divClasses"
+        @click="attachRed = !attachRed"
+      ></div>
+      <div class="demo" :class="[color, {red: attachRed}]"></div>
+      <div class="demo" :style="[myStyle, {height: width + 'px'}]"></div>
+      <hr />
+      <input type="text" v-model="color" />
+      <input type="text" v-model="width" />
+
+      <div>
+        <p v-if="show">You can see me!</p>
+        <p v-else>Now you see me</p>
+
+        <template v-if="show">
+          <h1>Heading</h1>
+          <p>Inside template</p>
+        </template>
+        <p v-show="show">Do you also see me?</p>
+        <button @click="show = !show">Switch</button>
+      </div>
+
+      <div>
+        <ul>
+          <li v-for="(ingredient, index) in ingredients">
+            {{ingredient}} ({{index}})
+          </li>
+        </ul>
+
+        <template v-for="(ingredient, i) in ingredients" :key="ingredient">
+          <h3>{{ingredient}}</h3>
+          <p>{{i}}</p>
+        </template>
+
+        <ul>
+          <li v-for="person in persons">
+            {{person.name}}
+            <div v-for="(value, key, index) in person">
+              {{key}}: {{value}} ({{index}})
+            </div>
+          </li>
+		</ul>
+		
+		<span v-for="n in 3">{{ n }}</span>
+      </div>
+    </div>
+    <div id="exercise">
+      <p>Vue.JS is pretty cool - {{ name }} ({{ age}})</p>
+      <p>{{age * 3}}</p>
+      <p>{{getRandomNumber()}}</p>
+      <div>
+        <img src="./images/squirrel.jpg" alt="" />
+      </div>
+      <div>
+        <input type="text" v-bind:value="name" />
+      </div>
+      <div>
+        <button @click="alert">Show Alert</button>
+      </div>
+      <div>
+        <!-- <input type="text" @keydown="value = $event.target.value"> -->
+        <input type="text" @keydown.enter="updateValue" />
+        <p>{{value}}</p>
+      </div>
+
+      <div>
+        <p>Current Value: {{ value }}</p>
+        <button @click="value += 5">Add 5</button>
+        <button @click="value += 1">Add 1</button>
+        <p>Result: {{ result }}</p>
+      </div>
+
+      <div>
+        <button @click="startEffect">Start Effect</button>
+        <div id="effect" :class="effect"></div>
+
+        <div :class="divClasses">I have no class</div>
+
+        <input type="text" v-model="className" />
+        <div :class="[className, {highlight: isHighlighted}]">XXXXXXXXX</div>
+
+        <input
+          type="text"
+          @keydown.enter="isHighlighted = $event.target.value"
+        />
+
+        <label>background color</label>
+        <input type="text" name="" id="" v-model="bgColor" />
+        <div :style="{backgroundColor: bgColor}">YYYYYYYYYYYYY</div>
+
+        <div>
+          Progress Bar
+          <button @click="startBar">start progress</button>
+          <div :style="progressBar">X</div>
+        </div>
+	  </div>
+	  
+	  <div v-for="value in valueObj"> 
+			  <div v-if="!Array.isArray(value)">{{value}}</div>
+			  <div v-else>
+				  <span v-for="v in value">{{ v }}</span>
+			  </div>
+		  </div>
+
+	  </div>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          title: "Hello World!",
+          link: "http://google.com",
+          finishedLink: '<a href="http://google.com">link</a>',
+          counter: 0,
+          x: 0,
+          y: 0,
+          name: "iiii",
+          attachRed: false,
+          color: "gray",
+          width: 100,
+          show: true,
+          ingredients: ["eggs", "rice"],
+          persons: [
+            { name: "Mary", color: "red", food: "pasta" },
+            { name: "Ann", color: "yellow", food: "pizza" }
+		  ],
+		  
+        },
+        computed: {
+          result() {
+            return this.counter > 5 ? "Greater than 5" : "Smaller than 5";
+          },
+          divClasses() {
+            return {
+              red: this.attachRed,
+              blue: !this.attachRed
+            };
+          },
+          myStyle() {
+            return {
+              backgroundColor: this.color,
+              width: this.width + "px"
+            };
+          }
+        },
+        methods: {
+          changeTitle: function(event) {
+            this.title = event.target.value;
+          },
+          sayHello() {
+            return this.title;
+          },
+          /*  increase(number, event) {
+			this.counter += number;
+			this.result = this.counter > 5 ? 'Greater than 5' : 'Smaller than 5';
+		  },
+		  decrease(number) {
+            this.counter -= number;
+          }, */
+          updateCoordinates(event) {
+            this.x = event.clientX;
+            this.y = event.clientY;
+          },
+          /* dummy() {
+		event.stopPropagation()
+	}, */
+          alertMe() {
+            alert("Alert!");
+          }
+        },
+        watch: {
+          counter: function(value) {
+            setTimeout(() => {
+              this.counter = 0;
+            }, 2000);
+          }
+        }
+      });
+
+      new Vue({
+        el: "#exercise",
+        data: {
+          name: "Mariana",
+          age: 33,
+          value: 0,
+          isHighlighted: false,
+          divClasses: [this.isHighlighted, "blue", "float"],
+          className: "",
+          bgColor: "",
+		  width: 20,
+		  valueObj: {
+			  name: 'Test',
+			  data: [4, 6, 8, 45, 52]
+		  }
+        },
+        methods: {
+          getRandomNumber() {
+            return Math.floor(Math.random() * 100);
+          },
+          alert() {
+            alert("Hi!");
+          },
+          updateValue(event) {
+            this.value = event.target.value;
+          },
+          startEffect() {
+            setInterval(() => {
+              this.isHighlighted = !this.isHighlighted;
+            }, 3000);
+          },
+          startBar() {
+            setInterval(() => {
+              if (this.width >= 100) {
+                return;
+              }
+              this.width += 20;
+            }, 2000);
+          }
+        },
+        computed: {
+          result() {
+            return this.value !== 37 ? "Not there yet" : "Done";
+          },
+          effect() {
+            return this.isHighlighted ? "highlight" : "shrink";
+          },
+          progressBar() {
+            return {
+              backgroundColor: "green",
+              width: `${this.width}px`
+            };
+          }
+        },
+        watch: {
+          result() {
+            setTimeout(() => {
+              this.value = 0;
+            }, 5000);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

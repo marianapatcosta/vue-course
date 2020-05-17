@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>Products App</title>
+  </head>
+
+  <body>
+    <div class="nav-bar"></div>
+    <div id="app">
+      <div class="cart">
+        <p>Cart({{cart.length}})</p>
+      </div>
+      <!-- add-to-cart event and premium props are linked to isPremium data and updateCart() of the parent app  -->
+      <product :premium="isPremium"
+             @add-to-cart="updateAddCart"
+             @remove-from-cart="updateRemoveCart"          
+             >
+      </product>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
